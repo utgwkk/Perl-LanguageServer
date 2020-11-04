@@ -296,6 +296,33 @@ sub _get_symbols
     
 # ---------------------------------------------------------------------------
 
+sub _rpcreq_completion {
+    my ($self, $workspace, $req) = @_;
+
+    my $symbols = $workspace->symbols;
+    my $uri = $req->params->{textDocument}->{uri};
+    my $trigger_character = $req->params->{context}->{triggerCharacter};
+
+    my $items = {};
+    foreach my $symbol (@{ $symbols->{$uri} }) {
+        my $name = $symbol->{name};
+        next unless $name =~ /^$trigger_character/;
+        my $kind = $name =~ /^\$/ ? 6 : 3;
+        $items->{$name} = {
+            label => $name,
+            kind  => $kind,
+        };
+    }
+
+    return {
+        items => [ map {
+            $items->{$_}
+        } sort keys %$items ],
+    };
+}
+
+# ---------------------------------------------------------------------------
+
 sub _rpcreq_definition
     {
     my ($self, $workspace, $req) = @_ ;

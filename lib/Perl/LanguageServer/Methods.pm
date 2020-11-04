@@ -28,7 +28,9 @@ sub _rpcreq_initialize
         #hoverProvider?: boolean;
         
         # The server provides completion support.
-        #completionProvider?: CompletionOptions;
+        completionProvider => {
+            triggerCharacters => ['.'],
+        },
 
         # The server provides signature help support.
 	    #signatureHelpProvider?: SignatureHelpOptions;
